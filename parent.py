@@ -2,28 +2,47 @@ from person import Person
 
 
 class Parent(Person):
-    names = []
-    emails = []
+    names = {}
+    emails = {}
+    invalidNames = []
+    invalidEmails = {}
     all = []
 
-    def __new__(cls, firstName, lastName, email):
-        name = firstName + " " + lastName
-        if name not in __class__.names and email not in __class__.emails:
-            return super(Parent, cls).__new__(cls)
+    def __new__(cls, name, email):
+        firstName, lastName = super().splitLastFirstName(name)
+        validatedEmail = super().validateEmail(email)
+        if firstName and lastName and validatedEmail:
+            name = super().getName(firstName, lastName)
+            # name = firstName + " " + lastName
+            if name not in __class__.names:
+                if validatedEmail not in __class__.emails:
+                    __class__.names[name] = [validatedEmail]
+                    __class__.emails[validatedEmail] = [name]
+                    return super(Parent, cls).__new__(cls)
+                else:
+                    # email is reused (not unique to one parent)
+                    if name not in __class__.emails[validatedEmail]:
+                        __class__.emails[validatedEmail].append(name)
+                    return None
+            else:
+                if validatedEmail not in __class__.names[name]:
+                    # parent using second email (Flag and return parent object with original email)
+                    __class__.names[name].append(validatedEmail)
+                    return next(parent for parent in __class__.all if parent.firstName == firstName and parent.lastName == lastName)
+                else:
+                    return next(parent for parent in __class__.all if parent.firstName == firstName and parent.lastName == lastName and parent.email == validatedEmail)
         else:
-            return next(parent for parent in __class__.all if parent.firstName == firstName and parent.lastName == lastName and parent.email == email)
+            if not firstName and not lastName and not name == "":
+                __class__.invalidNames.append(name)
+            if not validatedEmail and not email == "":
+                __class__.invalidEmails[name] = email
+            return None
 
-    def __init__(self, firstName, lastName, email):
+    def __init__(self, name, email):
         if self not in __class__.all:
-            super().__init__(firstName, lastName, email)
+            super().__init__(name, email)
             self._student = []
-            name = firstName + " " + lastName
-            __class__.names.append(name)
-            __class__.emails.append(email)
             __class__.all.append(self)
-        # else cases for gathering statistics about input data:
-        # if name does not exist but email does: flag as shared email address
-        # if name exists but email does not: flag as 2 emails for 1 user
 
     @property
     def student(self):

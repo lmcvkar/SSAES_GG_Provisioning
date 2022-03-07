@@ -1,26 +1,55 @@
+import csv
+import re
 from person import Person
 
 
 class Student(Person):
     names = []
     all = []
-    missingEmail = []
+    invalidNames = []
+    invalidEmails = {}
+    emailFile = None
+    namesNotFoundInEmailFile = []
 
-    def __new__(cls, firstName, lastName, grade):
-        name = firstName + " " + lastName
-        if name not in __class__.names:
-            return super(Student, cls).__new__(cls)
+    def __new__(cls, name, grade):
+        firstName, lastName = super().splitLastFirstName(name)
+        if firstName and lastName:
+            name = super().getName(firstName, lastName)
+            if name not in __class__.names:
+                __class__.names.append(name)
+                return super(Student, cls).__new__(cls)
+            else:
+                return next(student for student in __class__.all if student.firstName == firstName and student.lastName == lastName and student.grade == grade)
         else:
-            return next(student for student in __class__.all if student.firstName == firstName and student.lastName == lastName and student.grade == grade)
+            __class__.invalidNames.append(name)
 
-    def __init__(self, firstName, lastName, grade):
+    def __init__(self, name, grade):
         if self not in __class__.all:
-            super().__init__(firstName, lastName)
+            super().__init__(name)
             self._grade = grade
             self._parent = []
-            name = firstName + " " + lastName
-            __class__.names.append(name)
             __class__.all.append(self)
+            if __class__.emailFile:
+                self.getEmailFromFile()
+
+    def getEmailFromFile(self):
+        with open(__class__.emailFile, newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            name = super().getName(self.firstName, self.lastName)
+            nameFound = False
+            # while not self.email:
+            for row in reader:
+                # row = next(reader)
+                if re.search(self.firstName, row['First Name [Required]']) and re.search(self.lastName, row['Last Name [Required]']) and row['Status [READ ONLY]'] == 'Active':
+                    nameFound = True
+                    email = super().validateEmail(
+                        row['Email Address [Required]'])
+                    if email:
+                        self.email = email
+                    else:
+                        __class__.invalidEmails[name] = row['Email Address [Required]']
+            if not nameFound:
+                __class__.namesNotFoundInEmailFile.append(name)
 
     @property
     def grade(self):

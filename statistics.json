@@ -1,0 +1,65 @@
+{
+    "studentsWithNoParents":
+        {
+            "message": "Students with no parents:",
+            "verbose": "Students with names appearing in the parent file and whose parents have either incorrectly defined names and/or emails or are missing. These students will not be provisioned as they do not have a guardian defined in the system.",
+            "severity": "Error",
+            "suggestion": "Correct the parent details for these students before proceding with provisioning file generation. Alternatively, remove these students from the parent file: they will not be included in the provisioning files."
+        },
+   "studentsWithInvalidNames":
+        {
+            "message": "Students with invalid names:",
+            "verbose": "Students whose names are incorrectly defined in the parent file. Student names are required to be defined as lastName, firstName (middleName Optional).",
+            "severity": "Error",
+            "suggestion": "Correct the student names in Parent file before proceding with provisioning file generation. Alternatively, remove these students from the parent file: they will not be included in the provisioning files."
+        },
+    "studentsWithInvalidEmails":
+        {
+            "message": "Students with invalid emails:",
+            "verbose": "Students whose email address, in the Student Email File, is either missing or has an invalid format.",
+            "severity": "Error",
+            "suggestion": "Correct the student email addresses in the StudentEmail file before proceding with provisioning file generation. Alternatively, remove these students from the parent file: they will not be included in the provisioning files."
+        },
+    "studentsWithNoEmailAddress":
+        {
+            "message": "Students with no email address (email address not found):",
+            "verbose": "Students with missing email address, whose names are present in the Student Email File and not present in the invalid email address list.",
+            "severity": "Error",
+            "suggestion": "This points to an issue with the code: debugging is required."
+        },
+    "studentsWithNamesNotFoundInEmailFile":
+        {
+            "message": "Student names missing from email file:",
+            "verbose": "Students whose names are either missing or incorrectly defined in the Student Email File: typo or abbreviation in student name.",
+            "severity": "Error",
+            "suggestion": "Fix the student details in the Student Email file. Alternatively, remove these students from the parent file: they will not be included in the provisioning files."
+        },
+    "parentsWithInvalidNames":
+        {
+            "message": "Parents with invalid names:",
+            "verbose": "Parent names, as found in the parent file, that have an invalid format. The correct format is \"lastName, firstName (middleName optional)\".",
+            "severity": "Warning",
+            "suggestion": "The parent name can be corrected in the Parent file. If not, these parents will not be included in the generated configuration file. If both parents for a particular student are missing, this will lead to a case of student with no parents resulting in an Error message."
+        },
+    "parentsWithInvalidEmails":
+        {
+            "message": "Parents with invalid emails:",
+            "verbose": "Parents whose email addresses as defined in the parent file are invalid.",
+            "severity": "Warning",
+            "suggestion": "The parent email address can be corrected in the Parent file. If not, these parents will not be included in the generated configuration file. If both parents for a particular student are missing, this will lead to a case of student with no parents resulting in an Error message."
+        },
+    "parentsSharingEmailAddress":
+        {
+            "message": "Parents sharing an email address:",
+            "verbose": "Parent email addresses associated with more than one parent name. Only the first parent will be permitted to use the email address as their unique identifier, the other names on the list will not have parent objects because they lack a unique email address to use as an identifier.",
+            "severity": "Warning",
+            "suggestion": "The parent email address can be corrected in the Parent file. If not, only the first parent in the list will be included in the generated configuration file."
+        },
+    "parentsWithMultipleEmailAddresses":
+        {
+            "message": "Parents with multiple email addresses:",
+            "verbose": "Parent names associated with more than one email address. The first email address will be used as the parent's unique email address.",
+            "severity": "Warning",
+            "suggestion": "The first email address will be used as the parent's unique identifier. The others will not be included in the generated configuration files. No corrections are needed, except if the parent insists on using a different email address, then all email adresses of the parent in the Parent file can be replaced with the desired address."
+        }
+}
