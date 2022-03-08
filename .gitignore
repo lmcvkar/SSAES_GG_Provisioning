@@ -1,0 +1,9 @@
+#.gitignore
+*.csv
+trying_stuff.py
+parse_original.py
+parse_alt.py
+__pycache__
+Changes
+Input
+Output
